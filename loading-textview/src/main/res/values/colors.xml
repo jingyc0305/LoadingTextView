@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="circular_red">#F90101</color>
+    <color name="circular_blue">#0266C8</color>
+    <color name="circular_yellow">#F2B50F</color>
+    <color name="circular_green">#00933B</color>
+</resources>
