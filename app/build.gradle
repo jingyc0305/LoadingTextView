@@ -35,6 +35,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile  'com.android.support.test:runner:1.0.2'
     testCompile  'com.android.support.test.espresso:espresso-core:3.0.2'
-    compile project(':loading-textview')
-    //compile 'com.jyc:loading-textview:1.0.1'
+    //compile project(':loading-textview')
+    compile 'com.jyc:loading-textview:1.0.2'
 }

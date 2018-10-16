@@ -49,7 +49,7 @@ ext {
     userOrg = 'jingyc0305'
     groupId = 'com.jyc'
     artifactId = 'loading-textview'
-    publishVersion = '1.0.1'
+    publishVersion = '1.0.3'
     desc = 'a custom TextView with loading'
     website = 'https://github.com/jingyc0305/LoadingTextView'
     licences = ['Apache-2.0']
