@@ -3,6 +3,7 @@ package custom.com.loading_textview;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -21,15 +22,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * @Author: JIngYuchun
- * @Date: 2018/10/10
- * @Description: 自定义带加载进度的view
+ * JIngYuchun
+ * 2018/10/10
+ * 自定义带加载进度的view
  */
 public class LoadingTextView extends View {
     private Paint circlePaint;
     private Paint pointPaint;
     private TextPaint textPaint;
-    private int radius = 50;
+    private int radius = 30;
     private float distanceRatio = 0;
     PathMeasure pathMeasure, pathMeasure2;
     Path path, path2;
@@ -41,7 +42,12 @@ public class LoadingTextView extends View {
     Timer timer;
     ValueAnimator valueAnimator;
     Rect bounds = new Rect();
-
+    //自定义属性
+    private int mStartColor;
+    private int mEndColir;
+    private int mMainColor;
+    private int mLoadingStyle;
+    private boolean isGradient = false;
     public LoadingTextView(Context context) {
         super(context);
         init();
@@ -49,6 +55,14 @@ public class LoadingTextView extends View {
 
     public LoadingTextView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        TypedArray array=context.obtainStyledAttributes(attrs, R.styleable.LoadingTextView);
+        //获取自定义属性值
+        mStartColor = array.getColor(R.styleable.LoadingTextView_start_color,Color.RED);
+        mEndColir = array.getColor(R.styleable.LoadingTextView_end_color,Color.BLUE);
+        mMainColor = array.getColor(R.styleable.LoadingTextView_main_color,Color.GRAY);
+        mLoadingStyle = array.getColor(R.styleable.LoadingTextView_loading_style,0);
+        isGradient = array.getBoolean(R.styleable.LoadingTextView_loading_gradient,false);
+        array.recycle();
         init();
 
     }
@@ -59,23 +73,26 @@ public class LoadingTextView extends View {
     }
 
     private void init() {
-        mColors = new int[4];
-        mColors[0] = getResources().getColor(R.color.circular_blue);
+        mColors = new int[5];
+        mColors[0] = getResources().getColor(R.color.circular_gray);
         mColors[1] = getResources().getColor(R.color.circular_green);
         mColors[2] = getResources().getColor(R.color.circular_red);
         mColors[3] = getResources().getColor(R.color.circular_yellow);
-
+        mColors[4] = getResources().getColor(R.color.circular_blue);
         circlePaint = new Paint();
         circlePaint.setStyle(Paint.Style.STROKE);
         circlePaint.setStrokeCap(Paint.Cap.ROUND);
         circlePaint.setStrokeWidth(5);
+        circlePaint.setColor(mColors[0]);
         circlePaint.setAntiAlias(true);
-        SweepGradient lg = new SweepGradient(0, 0, Color.RED, Color.BLUE);
-        circlePaint.setShader(lg);
-
+        if(isGradient){
+            SweepGradient lg = new SweepGradient(0, 0, mStartColor, mEndColir);
+            circlePaint.setShader(lg);
+        }
         pointPaint = new Paint();
         pointPaint.setStrokeWidth(3);
         pointPaint.setAntiAlias(true);
+        pointPaint.setColor(mColors[0]);
         pointPaint.setStyle(Paint.Style.STROKE);
 
         textPaint = new TextPaint();
@@ -86,7 +103,7 @@ public class LoadingTextView extends View {
         path = new Path();
         path.addCircle(0, 0, radius, Path.Direction.CW);
         path2 = new Path();
-        path2.addCircle(0, 0, radius - 30, Path.Direction.CCW);
+        path2.addCircle(0, 0, radius - 10, Path.Direction.CCW);
         pathMeasure = new PathMeasure(path, false);
         pathMeasure2 = new PathMeasure(path2, false);
 
@@ -125,9 +142,11 @@ public class LoadingTextView extends View {
 
             @Override
             public void onAnimationRepeat(Animator animator) {
-                int color_index = new Random().nextInt(mColors.length);
-                circlePaint.setColor(mColors[color_index]);
-                pointPaint.setColor(mColors[color_index]);
+                if(isGradient){
+                    int color_index = new Random().nextInt(mColors.length);
+                    circlePaint.setColor(mColors[color_index]);
+                    pointPaint.setColor(mColors[color_index]);
+                }
             }
         });
         valueAnimator.setDuration(800);
@@ -135,6 +154,33 @@ public class LoadingTextView extends View {
         valueAnimator.setRepeatMode(ValueAnimator.RESTART);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         valueAnimator.start();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int widthMode=MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize=MeasureSpec.getSize(widthMeasureSpec);
+
+        int heightMode=MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize=MeasureSpec.getSize(heightMeasureSpec);
+
+        int width=70,height=70;//计算自定义View最终的宽和高
+        if(widthMode==MeasureSpec.EXACTLY){
+            //如果match_parent或者具体的值，直接赋值
+            width=widthSize;
+        }else if(widthMode==MeasureSpec.AT_MOST){
+            width= 70;
+        }
+        //高度跟宽度处理方式一样
+        if(heightMode==MeasureSpec.EXACTLY){
+            height=widthSize;
+        }else if(heightMode==MeasureSpec.AT_MOST){
+            height=  width;
+        }
+        //保存测量宽度和测量高度
+        setMeasuredDimension(width,height);
     }
 
     @Override
@@ -147,6 +193,7 @@ public class LoadingTextView extends View {
 
         } else {
             if (valueAnimator.isRunning()) {
+                alpah = 0;
                 valueAnimator.cancel();
             }
             //文字淡出动画
@@ -197,15 +244,24 @@ public class LoadingTextView extends View {
 
     //截取path实现loading效果
     private void startSegment(Canvas canvas) {
-        Path dst1 = new Path();
-        Path dst2 = new Path();
-        float stopD = pathMeasure.getLength() * distanceRatio;
-        float startD = (float) (stopD - ((0.5 - Math.abs(distanceRatio - 0.5)) * pathMeasure
-                .getLength())); //当前截取的开始点
-        pathMeasure.getSegment(startD, stopD, dst1, true);
-        pathMeasure2.getSegment(startD, stopD, dst2, true);
-        canvas.drawPath(dst1, circlePaint);
-        canvas.drawPath(dst2, circlePaint);
-        canvas.drawCircle(0, 0, 8, pointPaint);
+        if(mLoadingStyle == 0){
+            Path dst1 = new Path();
+            float stopD = pathMeasure.getLength() * distanceRatio;
+            float startD = (float) (stopD - ((0.5 - Math.abs(distanceRatio - 0.5)) * pathMeasure
+                    .getLength())); //当前截取的开始点
+            pathMeasure.getSegment(startD, stopD, dst1, true);
+            canvas.drawPath(dst1, circlePaint);
+        }else if(mLoadingStyle == 1){
+            Path dst1 = new Path();
+            Path dst2 = new Path();
+            float stopD = pathMeasure.getLength() * distanceRatio;
+            float startD = (float) (stopD - ((0.5 - Math.abs(distanceRatio - 0.5)) * pathMeasure
+                    .getLength())); //当前截取的开始点
+            pathMeasure.getSegment(startD, stopD, dst1, true);
+            pathMeasure2.getSegment(startD, stopD, dst2, true);
+            canvas.drawPath(dst1, circlePaint);
+            canvas.drawPath(dst2, circlePaint);
+            canvas.drawCircle(0, 0, 4, pointPaint);
+        }
     }
 }

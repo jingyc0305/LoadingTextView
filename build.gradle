@@ -1,15 +1,18 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     ext.kotlin_version = '1.2.51'
     repositories {
-        google()
+        //google()
         jcenter()
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
+        classpath 'com.novoda:bintray-release:0.4.0'
         //classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         //classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         // NOTE: Do not place your application dependencies here; they belong
@@ -17,17 +20,37 @@ buildscript {
     }
 
 }
-plugins {
-    id "com.github.dcendents.android-maven" version "2.1"
-    id "com.jfrog.bintray" version "1.8.4"
-}
 allprojects {
     repositories {
-        google()
+        //google()
         jcenter()
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+        maven{ url 'https://dl.bintray.com/jingyc0305/jyc'}
+    }
+    tasks.withType(Javadoc) {
+        options{
+            encoding "UTF-8"
+            charSet 'UTF-8'
+            links "http://docs.oracle.com/javase/7/docs/api"
+        }
     }
 }
 
-//task clean(type: Delete) {
-//    delete rootProject.buildDir
-//}
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+//统一声明配置 https://github.com/jingyc0305/LoadingTextView.git
+//key : e0c107e88fbad5a1147a0ba5f8d394f32fb8f171
+ext {
+    repoName = 'jyc'
+    userOrg = 'jingyc0305'
+    groupId = 'com.jyc'
+    artifactId = 'loading-textview'
+    publishVersion = '1.0.1'
+    desc = 'a custom TextView with loading'
+    website = 'https://github.com/jingyc0305/LoadingTextView'
+    licences = ['Apache-2.0']
+}

@@ -1,22 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    xmlns:ltv="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
 
     <custom.com.loading_textview.LoadingTextView
-        android:id="@+id/loading_text_view"
+        android:id="@+id/loading_text_view1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-</android.support.constraint.ConstraintLayout>
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/loading_text_view2"
+        android:layout_gravity="center"
+        android:layout_marginStart="85dp"
+        ltv:end_color="@color/colorAccent"
+        ltv:loading_gradient="false"
+        ltv:loading_style="normal"
+        ltv:main_color="@color/circular_gray"
+        ltv:start_color="@color/colorPrimary"/>
+
+    <custom.com.loading_textview.LoadingTextView
+        android:id="@+id/loading_text_view2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:layout_marginEnd="85dp"
+        android:layout_marginTop="133dp"
+        ltv:end_color="@color/colorAccent"
+        ltv:loading_gradient="true"
+        ltv:loading_style="normal"
+        ltv:main_color="@color/circular_gray"
+        ltv:start_color="@color/colorPrimary"/>
+
+    <custom.com.loading_textview.LoadingTextView
+        android:id="@+id/loading_text_view3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/loading_text_view1"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        ltv:end_color="@color/colorAccent"
+        ltv:main_color="@color/colorPrimary"
+        ltv:start_color="@color/circular_gray"
+        ltv:loading_style="crazy"
+        ltv:loading_gradient="false"/>
+
+    <custom.com.loading_textview.LoadingTextView
+        android:id="@+id/loading_text_view4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/loading_text_view2"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        ltv:end_color="@color/colorAccent"
+        ltv:start_color="@color/colorPrimary"
+        ltv:loading_gradient="true"
+        ltv:loading_style="crazy"
+        ltv:main_color="@color/circular_gray"/>
+</RelativeLayout>
